@@ -5,7 +5,6 @@ from soil_co2_efflux.utils.config import Config
 
 
 class LucasSoilDataLoader(DataLoader):
-
     OC_COL = "OC"
     LAT_COL = "TH_LAT"
     LONG_COL = "TH_LONG"
@@ -21,8 +20,12 @@ class LucasSoilDataLoader(DataLoader):
         super().__init__(
             config,
             self.RAW_DATA_FILENAME,
+            self.PROCESSED_DATA_FILENAME,
             self.COLUMNS
         )
 
     def load_raw_data_csv(self):
         return super().load_raw_data_csv()
+
+    def load_processed_data_csv(self):
+        return super().load_processed_data_csv()

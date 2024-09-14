@@ -1,12 +1,17 @@
 from typing import Final, List
+
 from data.data_loader import DataLoader
 from utils.config import Config
 
 
 class LucasSoilDataLoader(DataLoader):
 
+    OC_COL = "OC"
+    LAT_COL = "TH_LAT"
+    LONG_COL = "TH_LONG"
+
     COLUMNS: Final[List[str]] = [
-        "OC", "TH_LAT", "TH_LONG",
+        OC_COL, LAT_COL, LONG_COL,
     ]
 
     RAW_DATA_FILENAME: Final[str] = "LUCAS-SOIL-2018.csv"

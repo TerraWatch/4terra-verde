@@ -1,23 +1,24 @@
 import itertools
 import os
-from typing import Optional, Union, Final, Iterable, Tuple, List
+from typing import Optional, Union, Final, Iterable, Tuple, List, Dict
 
 import openeo
 import pandas as pd
 
 from datetime import datetime
 
+from data.models.feature import Feature
 from preprocessing.spacial_preparation import SpatialFeaturesGenerator
 from data.models.feature_collection import FeatureCollection
 from utils.config import Config
 
 
 class NDVIFeatureGenerator:
-    BATCH_SIZE: Final[int] = 200
     CSV_TITLE: Final[str] = "NDVI timeseries"
     CSV_FORMAT: Final[str] = "CSV"
     AGGREGATE_SPATIAL_REDUCER: Final[str] = "mean"
-    PROCESSED_DATA_FILENAME_BATCH: Final[str] = "NDVI_RESULTS_BATCH_{}.csv"
+    PROCESSED_DATA_BATCH_FILENAME: Final[str] = "NDVI_RESULTS_YEAR_MONTH_{}_BATCH_INDEX_{}.csv"
+    MAX_BATCH_SIZE: Final[int] = 200
 
     def __init__(
             self,
@@ -32,48 +33,61 @@ class NDVIFeatureGenerator:
 
         connection = self._open_connection()
 
-        for index, features_batch in self._chunk_creator(features, NDVIFeatureGenerator.BATCH_SIZE):
-            print("index: {}, features_batch: {}".format(index, features_batch))
+        for year_month, features_batch in self._batch_by_month(features):
+            print(f"calculating NDVI for year and month: {year_month}")
 
-            start_time = datetime.now()
-            ndvi_load_collection, geometries = self._get_ndvi_load_collection_cube(features_batch, connection)
+            if len(features_batch) > NDVIFeatureGenerator.MAX_BATCH_SIZE:
+                # Split the features_batch into smaller batches
+                num_batches = self._calculate_number_of_batches(features_batch)
+                for i in range(num_batches):
+                    start_index = i * NDVIFeatureGenerator.MAX_BATCH_SIZE
+                    end_index = min((i + 1) * NDVIFeatureGenerator.MAX_BATCH_SIZE, len(features_batch))
 
-            # Calculate the mean NDVI for each of the geometries.
-            timeseries = ndvi_load_collection.aggregate_spatial(
-                geometries=geometries,
-                reducer=NDVIFeatureGenerator.AGGREGATE_SPATIAL_REDUCER
-            )
+                    smaller_batch = features_batch[start_index:end_index]
+                    self._process_batch(smaller_batch, connection, year_month, i)
+            else:
+                # Process the batch as is
+                self._process_batch(features_batch, connection, year_month, 0)
 
-            # We now execute this as a batch job and download the timeseries in CSV format.
-            job = timeseries.execute_batch(
-                out_format=NDVIFeatureGenerator.CSV_FORMAT,
-                title=NDVIFeatureGenerator.CSV_TITLE
-            )
+    def _process_batch(self, features_batch, connection, year_month, batch_index):
+        start_time = datetime.now()
+        ndvi_load_collection, geometries = self._get_ndvi_load_collection_cube(features_batch, connection, year_month)
 
-            filename = os.path.join(
-                self.config.PATHS.PROCESSED_DATA_FILE_PATH,
-                NDVIFeatureGenerator.PROCESSED_DATA_FILENAME_BATCH.format(index)
-            )
+        # Calculate the mean NDVI for each of the geometries.
+        timeseries = ndvi_load_collection.aggregate_spatial(
+            geometries=geometries,
+            reducer=NDVIFeatureGenerator.AGGREGATE_SPATIAL_REDUCER
+        )
 
-            job.get_results().download_file(filename)
-            pd.read_csv(filename, index_col=0).head()
+        # We now execute this as a batch job and download the timeseries in CSV format.
+        job = timeseries.execute_batch(
+            out_format=NDVIFeatureGenerator.CSV_FORMAT,
+            title=NDVIFeatureGenerator.CSV_TITLE
+        )
 
-            end_time = datetime.now()
+        filename = os.path.join(
+            self.config.PATHS.PROCESSED_DATA_FILE_PATH,
+            NDVIFeatureGenerator.PROCESSED_DATA_BATCH_FILENAME.format(year_month, batch_index)
+        )
 
-            execution_time = end_time - start_time
-            print("index: {}, features_batch: {} finished with time {}".format(index, features_batch, execution_time))
+        job.get_results().download_file(filename)
+        pd.read_csv(filename, index_col=0).head()
+
+        end_time = datetime.now()
+        execution_time = end_time - start_time
+        print(f"year and month: {year_month}, batch_index: {batch_index}, finished with time {execution_time}")
 
     def _open_connection(self):
         connection = openeo.connect(url="openeo.dataspace.copernicus.eu")
         connection.authenticate_oidc()
         return connection
 
-    def _get_ndvi_load_collection_cube(self, features, connection):
+    def _get_ndvi_load_collection_cube(self, features, connection, year_month):
         geometries = self._prepare_load_connection_input(features)
 
         s2cube = connection.load_collection(
             "SENTINEL2_L2A",
-            temporal_extent=["2018-07-06", "2018-07-08"],
+            temporal_extent=[f"{year_month}-01", f"{year_month}-31"],
             bands=["B04", "B08"],
         )
 
@@ -97,23 +111,33 @@ class NDVIFeatureGenerator:
             return slice(None)
         return slice_range
 
-    def _chunk_creator(self, iterable: Iterable, batch_size: int) -> Iterable[Tuple[int, List]]:
+    def _batch_by_month(self, features: List[Feature]) -> Iterable[Tuple[str, List[Feature]]]:
         """
-        Creates chunks from an iterable with a specified batch size, and also returns the index of each chunk.
+        Batches features by month and year based on their sample_date.
 
         Parameters:
-        - iterable: the input iterable to be chunked
-        - batch_size: the size of each chunk
+        - features: List of Feature objects
 
         Returns:
         - An iterable of tuples, where each tuple contains:
-          - The index of the chunk
-          - A list of items in the chunk
+          - A string representing the month and year (format 'YYYY-MM')
+          - A list of Feature objects from that month
         """
-        args = [iter(iterable)] * batch_size
-        chunks = itertools.zip_longest(*args, fillvalue=None)
 
-        for index, chunk in enumerate(chunks):
-            # Convert chunk to a list, removing None values
-            chunk_list = [item for item in chunk if item is not None]
-            yield index, chunk_list
+        # Helper function to extract month and year from sample_date
+        def get_month_year(feature: Feature) -> str:
+            date_obj = datetime.strptime(feature.sample_date, '%Y-%m-%d %H:%M:%S')
+            return date_obj.strftime('%Y-%m')
+
+        # Group features by month and year
+        features.sort(key=lambda f: get_month_year(f))
+        grouped_features: Dict[str, List[Feature]] = {
+            k: list(g) for k, g in itertools.groupby(features, key=get_month_year)
+        }
+
+        # Return each batch of features
+        for month_year, batch in grouped_features.items():
+            yield month_year, batch
+
+    def _calculate_number_of_batches(self, features_batch):
+        return (len(features_batch) + NDVIFeatureGenerator.MAX_BATCH_SIZE - 1) // NDVIFeatureGenerator.MAX_BATCH_SIZE

@@ -23,7 +23,7 @@ export const TerraMap = (): JSX.Element =>
     
 	return (
         <>
-            <Typography variant='h6' style={ Styles.Title }>Leaflet Map</Typography>
+            <Typography variant='h6' style={ Styles.Title }>Map</Typography>
             <Grid container>
                 <Grid size={ 6 }>
                     <MapContainer

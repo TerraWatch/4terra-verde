@@ -1,14 +1,15 @@
 from typing import Dict, Any
+from xmlrpc.client import DateTime
 
 from data.models.geometry import Geometry
 
 
 class Feature:
-    def __init__(self, type: str, properties: Dict[str, Any], geometry: Geometry, placeId: int):
+    def __init__(self, type: str, properties: Dict[str, Any], geometry: Geometry, sample_date: DateTime):
         self.type = type
         self.properties = properties
         self.geometry = geometry
-        self.placeId = placeId
+        self.sample_date = sample_date
 
     def to_dict(self) -> Dict[str, Any]:
         return {

@@ -33,6 +33,7 @@ class SpatialFeaturesGenerator:
         for index, row in self.df.iterrows():
             lat = row[LucasSoilDataLoader.LAT_COL]
             long = row[LucasSoilDataLoader.LONG_COL]
+            sample_date = row[LucasSoilDataLoader.SURVEY_DATE_COL]
 
             polygon_coordinates = create_polygon_around_point(lat, long, radius)
 
@@ -43,7 +44,7 @@ class SpatialFeaturesGenerator:
                     type="Polygon",
                     coordinates=[polygon_coordinates]
                 ),
-                placeId=index
+                sample_date=sample_date
             )
 
             features.append(feature)

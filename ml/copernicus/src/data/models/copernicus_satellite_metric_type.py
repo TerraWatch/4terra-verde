@@ -102,8 +102,6 @@ class NDMI(CopernicusSatelliteMetric):
 
 
 "The normalized difference water index is most appropriate for water body mapping."
-
-
 class NDWI(CopernicusSatelliteMetric):
     def __init__(self):
         self.details = CopernicusSatelliteMetricDetails(
@@ -127,6 +125,3 @@ class CopernicusSatelliteMetricType(Enum):
     NDVI = "ndvi"
     NDMI = "ndmi"
     NDWI = "ndwi"
-    BAND04 = "band04"
-    BAND08 = "band08"
-    BAND04 = "band04"

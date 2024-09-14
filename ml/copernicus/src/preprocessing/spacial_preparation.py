@@ -1,5 +1,6 @@
 from pandas import DataFrame
 from shapely import Polygon
+
 from soil_co2_efflux.data.lucas_soil_data_loader import LucasSoilDataLoader
 
 from data.models.feature import Feature
@@ -14,7 +15,6 @@ class SpatialFeaturesGenerator:
 
     def prepare_spatial_features(
             self,
-            df: DataFrame,
             radius: float = 0.0001
     ) -> FeatureCollection:
         """
@@ -29,7 +29,7 @@ class SpatialFeaturesGenerator:
         """
         features = []
 
-        for index, row in df.iterrows():
+        for index, row in self.df.iterrows():
             lat = row[LucasSoilDataLoader.LAT_COL]
             long = row[LucasSoilDataLoader.LONG_COL]
 

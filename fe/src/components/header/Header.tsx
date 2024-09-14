@@ -1,6 +1,7 @@
-import { Box, AppBar, Toolbar, Typography, Button, Menu, MenuItem, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, Button, Menu, MenuItem, IconButton, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { Dashboard, Map, Info, Google, Email } from '@mui/icons-material';
 import { useGoogleLogin } from '@react-oauth/google';
+import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
 import React, { SyntheticEvent } from 'react';
 import { useMsal } from '@azure/msal-react';
@@ -16,9 +17,8 @@ const LogInMethods =
 const DrawerItems =
 [
 	{ id: 'btnDashboard', caption: 'Dashboard', icon: <Dashboard/> },
-	{ id: 'btnAbout', caption: 'About', icon: <Info/> },
-	{ id: 'btnOlmap', caption: 'OpenLayer Map', icon: <Map/> },
-	{ id: 'btnLmap', caption: 'Leaflet Map', icon: <Map/> }
+	{ id: 'btnLmap', caption: 'Map', icon: <Map/> },
+	{ id: 'btnAbout', caption: 'About', icon: <Info/> }
 ]
 
 export const Header = () =>
@@ -79,7 +79,10 @@ export const Header = () =>
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position='static'>
 				<Toolbar>
-					<Typography variant='h6' component='div' style={ Styles.Title } onClick={ toggleDrawer(true) }>TerraWatch</Typography>
+					<IconButton style={ Styles.Drawer } onClick={ toggleDrawer(true) }>
+						<MenuIcon/>
+					</IconButton>
+					<Typography variant='h6' component='div' style={ Styles.Title }>TerraWatch</Typography>
 					<Button color='inherit' onClick={ handleLoginMenuClick }>Log In</Button>
 					<Menu anchorEl={ anchorElement } open={ menuOpen } onClose={ handleClose }>
 						{

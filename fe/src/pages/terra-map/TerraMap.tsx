@@ -40,8 +40,8 @@ export const TerraMap = (): JSX.Element =>
                     <Grid container sx={ { margin: 2 } }>
                         <Grid size={ 12 } sx={ { flexGrow: 1 } }>
                             <FormControl fullWidth size='small'>
-                                <InputLabel>Age</InputLabel>
-                                <Select label='Age' value={ trainingAlgorithm } onChange={ trainingAlgorithmSelected }>
+                                <InputLabel>Layer</InputLabel>
+                                <Select label='Layer' value={ trainingAlgorithm } onChange={ trainingAlgorithmSelected }>
                                     { TrainingAlgorithms.map(ta => (<MenuItem key={ ta.value } value={ ta.key }>{ ta.value }</MenuItem>)) }
                                 </Select>
                             </FormControl>

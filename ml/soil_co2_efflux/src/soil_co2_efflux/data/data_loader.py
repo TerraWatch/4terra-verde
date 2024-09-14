@@ -2,7 +2,8 @@ import os
 import pandas as pd
 
 from abc import ABC, abstractmethod
-from utils.config import Config
+
+from soil_co2_efflux.utils.config import Config
 
 
 class DataLoader(ABC):

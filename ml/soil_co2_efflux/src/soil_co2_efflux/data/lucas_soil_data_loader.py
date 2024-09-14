@@ -1,7 +1,7 @@
 from typing import Final, List
 
-from data.data_loader import DataLoader
-from utils.config import Config
+from soil_co2_efflux.data.data_loader import DataLoader
+from soil_co2_efflux.utils.config import Config
 
 
 class LucasSoilDataLoader(DataLoader):

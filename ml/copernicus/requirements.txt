@@ -3,3 +3,4 @@ openeo
 shapely
 geopy
 pyproj
+scipy

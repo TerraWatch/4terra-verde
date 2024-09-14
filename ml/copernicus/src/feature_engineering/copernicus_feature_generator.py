@@ -24,7 +24,7 @@ class CopernicusFeatureGenerator:
     CSV_FORMAT: Final[str] = "CSV"
     AGGREGATE_SPATIAL_REDUCER: Final[str] = "mean"
     PROCESSED_DATA_BATCH_FILENAME: Final[str] = "{}_RESULTS_YEAR_MONTH_{}_BATCH_INDEX_{}.csv"
-    MAX_BATCH_SIZE: Final[int] = 50
+    MAX_BATCH_SIZE: Final[int] = 10
 
     def __init__(
             self,

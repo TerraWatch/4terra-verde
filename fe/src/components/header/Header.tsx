@@ -4,7 +4,22 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import React, { SyntheticEvent } from 'react';
 import { useMsal } from '@azure/msal-react';
+import Styles from './Styles';
 import axios from 'axios';
+
+const LogInMethods =
+[
+	{ id: 'btnMsLogin', caption: 'Microsoft', icon: <Email fontSize="small"/> },
+	{ id: 'btnGoogleLogin', caption: 'Google', icon: <Google fontSize="small"/> }
+];
+
+const DrawerItems =
+[
+	{ id: 'btnDashboard', caption: 'Dashboard', icon: <Dashboard/> },
+	{ id: 'btnAbout', caption: 'About', icon: <Info/> },
+	{ id: 'btnOlmap', caption: 'OpenLayer Map', icon: <Map/> },
+	{ id: 'btnLmap', caption: 'Leaflet Map', icon: <Map/> }
+]
 
 export const Header = () =>
 {
@@ -26,7 +41,7 @@ export const Header = () =>
 				break;
 			case 'btnOlmap': navigate('olmap');
 				break;
-			case 'btnLmap': navigate('lmap');
+			case 'btnLmap': navigate('map');
 				break;
 			case 'btnMsLogin': microsoftLogin();
 				break;
@@ -64,62 +79,36 @@ export const Header = () =>
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position='static'>
 				<Toolbar>
-					<Typography variant='h6' component='div' style={ { flex: 1, cursor: 'pointer' } } onClick={ toggleDrawer(true) }>TerraWatch</Typography>
+					<Typography variant='h6' component='div' style={ Styles.Title } onClick={ toggleDrawer(true) }>TerraWatch</Typography>
 					<Button color='inherit' onClick={ handleLoginMenuClick }>Log In</Button>
 					<Menu anchorEl={ anchorElement } open={ menuOpen } onClose={ handleClose }>
-						<MenuItem id='btnMsLogin' onClick={ handleClick }>
-							<ListItemIcon>
-								<Email fontSize="small"/>
-							</ListItemIcon>
-							Microsoft
-						</MenuItem>
-						<MenuItem id='btnGoogleLogin' onClick={ handleClick }>
-							<ListItemIcon>
-								<Google fontSize="small"/>
-							</ListItemIcon>
-							Google
-						</MenuItem>
+						{
+							LogInMethods.map(lim =>
+							(
+								<MenuItem key={ lim.id } id={ lim.id } onClick={ handleClick }>
+									<ListItemIcon>{ lim.icon }</ListItemIcon>{ lim.caption }
+								</MenuItem>
+							))
+						}
 					</Menu>
 				</Toolbar>
 			</AppBar>
 			<Drawer open={ drawerOpen } onClose={ toggleDrawer(false) }>
 				<Box sx={{ width: 250 }} role="presentation" onClick={ toggleDrawer(false) }>
 					<List>
-						<ListItem key='Dashboard' disablePadding>
-							<ListItemButton id='btnDashboard' onClick={ handleClick }>
-								<ListItemIcon>
-									<Dashboard/>
-								</ListItemIcon>
-								<ListItemText primary='Dashboard'/>
-							</ListItemButton>
-						</ListItem>
-						<ListItem key='About' disablePadding>
-							<ListItemButton id='btnAbout' onClick={ handleClick }>
-								<ListItemIcon>
-									<Info/>
-								</ListItemIcon>
-								<ListItemText primary='About'/>
-							</ListItemButton>
-						</ListItem>
-					</List>
-					<Divider/>
-					<List>
-						<ListItem key='OpenLayer Map' disablePadding>
-							<ListItemButton id='btnOlmap' onClick={ handleClick }>
-								<ListItemIcon>
-									<Map/>
-								</ListItemIcon>
-								<ListItemText primary='OpenLayer Map'/>
-							</ListItemButton>
-						</ListItem>
-						<ListItem key='Leaflet Map' disablePadding>
-							<ListItemButton id='btnLmap' onClick={ handleClick }>
-								<ListItemIcon>
-									<Map/>
-								</ListItemIcon>
-								<ListItemText primary='Leaflet Map'/>
-							</ListItemButton>
-						</ListItem>
+						{
+							DrawerItems.map(di =>
+							(
+								<ListItem key={ di.caption } disablePadding>
+									<ListItemButton id={ di.id } onClick={ handleClick }>
+										<ListItemIcon>
+											{ di.icon }
+										</ListItemIcon>
+										<ListItemText primary={ di.caption }/>
+									</ListItemButton>
+								</ListItem>
+							))
+						}
 					</List>
 				</Box>
 			</Drawer>

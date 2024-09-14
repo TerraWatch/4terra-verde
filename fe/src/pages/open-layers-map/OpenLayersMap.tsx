@@ -3,6 +3,7 @@ import TileLayer from 'ol/layer/Tile.js';
 import OSM from 'ol/source/OSM.js';
 import { useEffect } from 'react';
 import * as proj from "ol/proj";
+import Styles from './Styles';
 import View from 'ol/View.js';
 import Map from 'ol/Map.js';
 import 'ol/ol.css';
@@ -17,15 +18,15 @@ export const OpenLayersMap = (): JSX.Element =>
         {
             target: 'map',
             layers: [ new TileLayer({ source: new OSM() }) ],
-            view: new View({ center: [0, 0], zoom: 13 })
+            view: new View({ center: [0, 0], zoom: 11 })
         });
-        olMap.getView().animate({ zoom: 13 }, { center: hellas }, { duration: 2000 });
+        olMap.getView().animate({ zoom: 11 }, { center: hellas }, { duration: 2000 });
     }, []);
     
     return (
         <>
-            <Typography variant='h6' style={ { textAlign: 'center' } }>OpenLayers Map</Typography>
-            <div id="map" style={ { height: '80vh', margin: '10px' } }></div>
+            <Typography variant='h6' style={ Styles.Title }>OpenLayers Map</Typography>
+            <div id="map" style={ Styles.Map }></div>
         </>
     )
 }

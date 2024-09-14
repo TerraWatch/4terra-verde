@@ -1,11 +1,11 @@
 import GoogleAuthConfig from './configurations/GoogleAuthConfig';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import MsAuthConfig from './configurations/MsalConfig';
+import { Header } from './components/header/Header';
+import { Footer } from './components/footer/Footer';
 import { MsalProvider } from '@azure/msal-react';
 import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from './router/AppRoutes';
-import { Header } from './components/Header';
-import { Footer } from './components/Footer';
 import { CssBaseline } from '@mui/material';
 import React from 'react';
 

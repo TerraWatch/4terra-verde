@@ -3,6 +3,7 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import { SyntheticEvent, useRef } from 'react';
 import Grid from '@mui/material/Grid2';
 import "leaflet/dist/leaflet.css";
+import Styles from './Styles';
 import React from 'react';
 
 const TrainingAlgorithms =
@@ -11,7 +12,7 @@ const TrainingAlgorithms =
     { key: 'da', value: 'Deforestation / Afforestation' }
 ]
 
-export const LeafletMap = (): JSX.Element =>
+export const TerraMap = (): JSX.Element =>
 {
     const [trainingAlgorithm, setTrainingAlgorithm] = React.useState<string>('');
     const mapReference = useRef(null);
@@ -22,14 +23,14 @@ export const LeafletMap = (): JSX.Element =>
     
 	return (
         <>
-            <Typography variant='h6' style={ { textAlign: 'center' } }>Leaflet Map</Typography>
+            <Typography variant='h6' style={ Styles.Title }>Leaflet Map</Typography>
             <Grid container>
                 <Grid size={ 6 }>
                     <MapContainer
                         center={ [40.54, 22.62] }
                         zoom={ 10 }
                         ref={ mapReference }
-                        style={ { height: '80vh', margin: '10px' } }>
+                        style={ Styles.Map }>
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>

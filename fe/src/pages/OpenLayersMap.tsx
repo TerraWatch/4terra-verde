@@ -9,7 +9,7 @@ import 'ol/ol.css';
 
 export const OpenLayersMap = (): JSX.Element =>
 {
-    const hellas = proj.fromLonLat([22.9483502, 40.6263806]);
+    const hellas = proj.fromLonLat([22.62, 40.54]);
     
     useEffect(() =>
     {

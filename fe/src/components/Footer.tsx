@@ -11,7 +11,7 @@ export class Footer extends React.Component
     {
 		return (
 			<Box sx={ boxStyling }>
-                <Typography variant='h6' component='div' sx={ titleStyling }>TerraWatch</Typography>
+                <Typography variant='body1' component='div' sx={ titleStyling }>TerraWatch</Typography>
 			</Box>
 		)
 	}

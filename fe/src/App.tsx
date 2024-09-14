@@ -1,3 +1,7 @@
+import GoogleAuthConfig from './configurations/GoogleAuthConfig';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import MsAuthConfig from './configurations/MsalConfig';
+import { MsalProvider } from '@azure/msal-react';
 import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from './router/AppRoutes';
 import { Header } from './components/Header';
@@ -12,9 +16,13 @@ export class App extends React.Component
 		return (
 			<BrowserRouter>
 				<CssBaseline/>
-				<Header/>
-				<AppRoutes/>
-				<Footer/>
+				<GoogleOAuthProvider clientId={ GoogleAuthConfig.AuthConfig.clientId }>
+					<MsalProvider instance={ MsAuthConfig.AuthConfig }>
+						<Header/>
+						<AppRoutes/>
+						<Footer/>
+					</MsalProvider>
+				</GoogleOAuthProvider>
 			</BrowserRouter>
 		)
 	}

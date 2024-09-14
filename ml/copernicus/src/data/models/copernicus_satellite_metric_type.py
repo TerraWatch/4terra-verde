@@ -29,6 +29,7 @@ class CopernicusSatelliteMetric(ABC):
         pass
 
 
+"The normalized difference vegetation index is a simple, but effective index for quantifying green vegetation. It is a measure of the state of vegetation health based on how plants reflect light at certain wavelengths."
 class NDVI(CopernicusSatelliteMetric):
     def __init__(self):
         self.details = CopernicusSatelliteMetricDetails(
@@ -80,7 +81,52 @@ class Band08(CopernicusSatelliteMetric):
         return nir
 
 
+"The normalized difference moisture Index (NDMI) is used to determine vegetation water content and monitor droughts."
+class NDMI(CopernicusSatelliteMetric):
+    def __init__(self):
+        self.details = CopernicusSatelliteMetricDetails(
+            "NDMI",
+            ["B08A", "B11", "SCL"],
+            "SENTINEL2_L2A"
+        )
+
+    def get_details(self) -> CopernicusSatelliteMetricDetails:
+        return self.details
+
+    def get_feature_calc_cube(self, cube: DataCube) -> DataCube:
+        b8a = cube.band("B08A")
+        b11 = cube.band("B11")
+        ndmi = (b8a - b11) / (b8a + b11)
+
+        return ndmi
+
+
+"The normalized difference water index is most appropriate for water body mapping."
+
+
+class NDWI(CopernicusSatelliteMetric):
+    def __init__(self):
+        self.details = CopernicusSatelliteMetricDetails(
+            "NDWI",
+            ["B03", "B08", "SCL"],
+            "SENTINEL2_L2A"
+        )
+
+    def get_details(self) -> CopernicusSatelliteMetricDetails:
+        return self.details
+
+    def get_feature_calc_cube(self, cube: DataCube) -> DataCube:
+        b03 = cube.band("B03")
+        b08 = cube.band("B08")
+        ndwi = (b03 - b08) / (b03 + b08)
+
+        return ndwi
+
+
 class CopernicusSatelliteMetricType(Enum):
     NDVI = "ndvi"
+    NDMI = "ndmi"
+    NDWI = "ndwi"
     BAND04 = "band04"
     BAND08 = "band08"
+    BAND04 = "band04"

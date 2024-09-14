@@ -35,18 +35,19 @@ class SpatialFeaturesGenerator:
             long = row[LucasSoilDataLoader.LONG_COL]
             sample_date = row[LucasSoilDataLoader.SURVEY_DATE_COL]
 
-            polygon_coordinates = create_polygon_around_point(lat, long, radius)
-
-            feature = Feature(
-                type="Feature",
-                properties={},
-                geometry=Geometry(
-                    type="Polygon",
-                    coordinates=[polygon_coordinates]
-                ),
-                sample_date=sample_date
-            )
-
-            features.append(feature)
+            try:
+                polygon_coordinates = create_polygon_around_point(lat, long, radius)
+                feature = Feature(
+                    type="Feature",
+                    properties={},
+                    geometry=Geometry(
+                        type="Polygon",
+                        coordinates=[polygon_coordinates]
+                    ),
+                    sample_date=sample_date
+                )
+                features.append(feature)
+            except ValueError:
+                continue
 
         return features

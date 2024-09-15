@@ -1,0 +1,6 @@
+pandas
+openeo
+shapely
+geopy
+pyproj
+scipy

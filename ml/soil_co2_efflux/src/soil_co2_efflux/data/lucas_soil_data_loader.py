@@ -15,7 +15,7 @@ class LucasSoilDataLoader(DataLoader):
     ]
 
     RAW_DATA_FILENAME: Final[str] = "LUCAS-SOIL-2018.csv"
-    PROCESSED_DATA_FILENAME: Final[str] = "LUCAS-SOIL-PROCESSED-2018.csv"
+    PROCESSED_DATA_FILENAME: Final[str] = "LUCAS-SOIL-PROCESSED-2018-small.csv"
 
     def __init__(self, config: Config):
         super().__init__(

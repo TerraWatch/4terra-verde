@@ -23,7 +23,7 @@ class CopernicusFeatureGenerator:
     CSV_TITLE: Final[str] = "{} timeseries"
     CSV_FORMAT: Final[str] = "CSV"
     AGGREGATE_SPATIAL_REDUCER: Final[str] = "mean"
-    PROCESSED_DATA_BATCH_FILENAME: Final[str] = "{}_RESULTS_YEAR_MONTH_{}_BATCH_INDEX_{}.csv"
+    RAW_DATA_BATCH_FILENAME: Final[str] = "{}_RESULTS_YEAR_MONTH_{}_BATCH_INDEX_{}.csv"
     MAX_BATCH_SIZE: Final[int] = 10
 
     def __init__(
@@ -77,8 +77,8 @@ class CopernicusFeatureGenerator:
         )
 
         filename = os.path.join(
-            self.config.PATHS.PROCESSED_DATA_FILE_PATH,
-            CopernicusFeatureGenerator.PROCESSED_DATA_BATCH_FILENAME.format(
+            self.config.PATHS.RAW_DATA_FILE_PATH,
+            CopernicusFeatureGenerator.RAW_DATA_BATCH_FILENAME.format(
                 self.copernicus_satellite_metric.get_details().feature,
                 year_month,
                 batch_index

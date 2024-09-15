@@ -6,8 +6,8 @@ from soil_co2_efflux.preprocessing.lucas_soil_data_cleaning import clean_oc
 from soil_co2_efflux.utils.config import Config
 
 config = Config()
-local_soil_data_loader = LucasSoilDataLoader(config)
-data = local_soil_data_loader.load_raw_data_csv()
+lucas_soil_data_loader = LucasSoilDataLoader(config)
+data = lucas_soil_data_loader.load_raw_data_csv()
 
 cleaned_data = clean_oc(data)
 

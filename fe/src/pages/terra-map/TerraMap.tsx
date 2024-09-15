@@ -1,5 +1,5 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { Circle, CircleMarker, MapContainer, Marker, Polyline, Popup, TileLayer } from 'react-leaflet';
 import { SyntheticEvent, useRef } from 'react';
 import Grid from '@mui/material/Grid2';
 import "leaflet/dist/leaflet.css";
@@ -20,6 +20,14 @@ export const TerraMap = (): JSX.Element =>
     const trainingAlgorithmSelected = (e: SelectChangeEvent) => setTrainingAlgorithm(e.target.value);
 
     const getLayer = (e: SyntheticEvent) => console.log(e);
+
+    const polyline: [number, number][] =
+    [
+        [40.55, 22.60],
+        [40.60, 22.63],
+        [40.58, 22.68],
+        [40.55, 22.60]
+    ];
     
 	return (
         <>
@@ -34,6 +42,15 @@ export const TerraMap = (): JSX.Element =>
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+                        <Circle center={ [40.44, 22.52] } pathOptions={ { fillColor: 'blue' } } radius={2000}>
+                            <Popup>Blue Area</Popup>
+                        </Circle>
+                        <CircleMarker center={ [40.64, 22.52] } pathOptions={ { color: 'red' } } radius={20}>
+                            <Popup>Red Area</Popup>
+                        </CircleMarker>
+                        <Polyline pathOptions={ { color: 'lime' } } positions={ polyline }>
+                            <Popup>Lime Polyline</Popup>
+                        </Polyline>
                     </MapContainer>
                 </Grid>
                 <Grid size={ 6 }>

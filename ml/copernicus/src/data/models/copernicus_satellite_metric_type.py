@@ -86,7 +86,7 @@ class NDMI(CopernicusSatelliteMetric):
     def __init__(self):
         self.details = CopernicusSatelliteMetricDetails(
             "NDMI",
-            ["B08A", "B11", "SCL"],
+            ["B8A", "B11", "SCL"],
             "SENTINEL2_L2A"
         )
 
@@ -94,7 +94,7 @@ class NDMI(CopernicusSatelliteMetric):
         return self.details
 
     def get_feature_calc_cube(self, cube: DataCube) -> DataCube:
-        b8a = cube.band("B08A")
+        b8a = cube.band("B8A")
         b11 = cube.band("B11")
         ndmi = (b8a - b11) / (b8a + b11)
 
